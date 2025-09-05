@@ -14,12 +14,29 @@
 
   <div id="chat"></div>
 
-  <div id="inputBox">
-    <input type="text" id="input" placeholder="Tulis pertanyaan..." />
-    <button id="sendBtn">Kirim</button>
+  <!-- tombol stop -->
+  <div id="stopContainer">
+    <button id="stopBtn">⏹ Stop</button>
   </div>
 
-  <!-- Taruh JS di luar -->
+  <div id="inputBox">
+    <input type="text" id="input" placeholder="Tulis pertanyaan..." />
+    <label onclick="toggleMenu()">📎</label>
+    <button id="sendBtn">Kirim</button>
+
+    <!-- Menu upload -->
+    <div id="uploadMenu">
+      <button onclick="openCamera()">📷 Kamera</button>
+      <button onclick="openGallery()">🖼️ Foto</button>
+      <button onclick="openFile()">📂 File</button>
+    </div>
+
+    <!-- Input file tersembunyi -->
+    <input type="file" id="cameraInput" accept="image/*" capture="camera">
+    <input type="file" id="galleryInput" accept="image/*">
+    <input type="file" id="fileInput">
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
