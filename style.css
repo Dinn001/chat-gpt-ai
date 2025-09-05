@@ -42,6 +42,7 @@ header {
   gap: 6px;
   padding: 10px;
   background: rgba(0,0,0,0.4);
+  position: relative;
 }
 #input {
   flex: 1;
@@ -49,11 +50,46 @@ header {
   border: none;
   border-radius: 8px;
 }
-button {
+button, label {
   padding: 10px 15px;
   border-radius: 8px;
   border: none;
   background: #0078ff;
   color: #fff;
   cursor: pointer;
+}
+#uploadMenu {
+  display: none;
+  position: absolute;
+  bottom: 55px;
+  left: 10px;
+  background: #2c2c3c;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+#uploadMenu button {
+  width: 100%; padding: 10px; margin: 5px 0;
+  border: none; border-radius: 8px;
+  background: #0078ff; color: #fff; font-size: 1rem;
+  cursor: pointer;
+}
+input[type=file] { display: none; }
+#stopContainer {
+  text-align: center;
+  margin: 5px;
+  display: none;
+}
+#stopBtn {
+  padding: 6px 12px;
+  background: #ff5555;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+img.preview {
+  max-width: 150px;
+  border-radius: 8px;
+  margin-top: 5px;
 }
