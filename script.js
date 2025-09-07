@@ -23,6 +23,7 @@ const systemInstruction = {
   }]
 };
 
+// Tambah pesan ke chat
 function addMessage(content, sender, isFile=false, fileName="") {
   const div = document.createElement("div");
   div.classList.add("message", sender);
@@ -54,6 +55,7 @@ function addMessage(content, sender, isFile=false, fileName="") {
   return div;
 }
 
+// Efek mengetik
 async function typeEffect(element, text, speed=20) {
   typingAbort = false;
   stopContainer.style.display = "block";
@@ -67,6 +69,7 @@ async function typeEffect(element, text, speed=20) {
   stopContainer.style.display = "none";
 }
 
+// Konversi file ke base64
 async function fileToBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -76,6 +79,7 @@ async function fileToBase64(file) {
   });
 }
 
+// Kirim pesan
 async function sendMessage() {
   const text = input.value.trim();
   if (!text && uploadedFiles.length === 0) return;
@@ -112,6 +116,65 @@ async function sendMessage() {
 
     history.push({ role: "user", parts });
 
+    const body = { contents: [systemInstruction, ...history] };
+
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+
+    const data = await res.json();
+    console.log("Response:", data);
+
+    const botText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ Tidak ada jawaban.";
+
+    const botDiv = addMessage("", "bot");
+    await typeEffect(botDiv, botText, 20);
+
+    history.push({ role: "model", parts: [{ text: botText }] });
+  } catch (err) {
+    addMessage("⚠️ Error: " + err.message, "bot");
+  }
+
+  uploadedFiles = [];
+}
+
+// Event listener
+sendBtn.addEventListener("click", sendMessage);
+input.addEventListener("keypress", e => { if (e.key === "Enter") sendMessage(); });
+stopBtn.addEventListener("click", () => { typingAbort = true; });
+
+// Clear chat
+function clearChat() {
+  chatDiv.innerHTML = "";
+  history = [];
+  uploadedFiles = [];
+  addMessage("🔄 Chat dihapus. Mulai percakapan baru.", "bot");
+}
+
+// Menu upload
+function toggleMenu() {
+  const menu = document.getElementById("uploadMenu");
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+function openCamera() { document.getElementById("cameraInput").click(); }
+function openGallery() { document.getElementById("galleryInput").click(); }
+function openFile() { document.getElementById("fileInput").click(); }
+
+async function handleFiles(files) {
+  for (let file of files) {
+    uploadedFiles.push({
+      name: file.name,
+      type: file.type,
+      base64: await fileToBase64(file),
+      preview: URL.createObjectURL(file)
+    });
+  }
+}
+document.getElementById("cameraInput").addEventListener("change", e => handleFiles(e.target.files));
+document.getElementById("galleryInput").addEventListener("change", e => handleFiles(e.target.files));
+document.getElementById("fileInput").addEventListener("change", e => handleFiles(e.target.files));
     const body = { contents: [systemInstruction, ...history] };
 
     const res = await fetch(API_URL, {
