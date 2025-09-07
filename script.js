@@ -11,6 +11,17 @@ const stopContainer = document.getElementById("stopContainer");
 
 let typingAbort = false;
 
+// instruksi sistem biar konsisten
+const systemInstruction = {
+  role: "system",
+  parts: [{
+    text: `Instruksi:
+- Selalu jawab dalam bahasa Indonesia.
+- Jika user secara eksplisit minta jawaban dalam bahasa Inggris, baru gunakan bahasa Inggris.
+- Nama orang, istilah teknis, atau judul bisa tetap dalam bahasa aslinya.`
+  }]
+};
+
 // tambah pesan ke chat
 function addMessage(content, sender) {
   const div = document.createElement("div");
@@ -44,13 +55,28 @@ async function sendMessage() {
   addMessage(text, "user");
   input.value = "";
 
-  // siapkan body request
+  // 🔹 Auto-reply salam
+  const salam = ["halo", "hallo", "hai", "hello", "assalamualaikum"];
+  if (salam.includes(text.toLowerCase())) {
+    const div = addMessage("", "bot");
+    await typeEffect(div, "Halo 👋, saya adalah Asisten pribadi *Dinns* yang siap membantu kapan pun Anda butuhkan 🚀", 20);
+    return;
+  }
+
+  // 🔹 Auto-reply pembuat
+  if (text.toLowerCase().includes("pembuat") ||
+      text.toLowerCase().includes("pencipta") ||
+      text.toLowerCase().includes("siapa yang buat")) {
+    const div = addMessage("", "bot");
+    await typeEffect(div, "Saya dibuat dan dikembangkan oleh *Dinns* untuk membantu Anda 🚀", 20);
+    return;
+  }
+
+  // 🔹 Kalau bukan auto-reply → kirim ke Gemini
   const body = {
     contents: [
-      {
-        role: "user",
-        parts: [{ text }]
-      }
+      systemInstruction,
+      { role: "user", parts: [{ text }] }
     ]
   };
 
