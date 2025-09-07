@@ -1,4 +1,3 @@
-// ⚠️ API key Gemini dari AI Studio
 const API_KEY = "AIzaSyB9_pVjMK0Rt_BX7ILCqyRSEZd0qaExrTs";
 const MODEL = "gemini-1.5-flash-latest";
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
@@ -11,18 +10,7 @@ const stopContainer = document.getElementById("stopContainer");
 
 let typingAbort = false;
 
-// instruksi sistem biar konsisten
-const systemInstruction = {
-  role: "system",
-  parts: [{
-    text: `Instruksi:
-- Selalu jawab dalam bahasa Indonesia.
-- Jika user secara eksplisit minta jawaban dalam bahasa Inggris, baru gunakan bahasa Inggris.
-- Nama orang, istilah teknis, atau judul bisa tetap dalam bahasa aslinya.`
-  }]
-};
-
-// tambah pesan ke chat
+// tampilkan pesan
 function addMessage(content, sender) {
   const div = document.createElement("div");
   div.classList.add("message", sender);
@@ -51,7 +39,6 @@ async function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
 
-  // tampilkan pesan user
   addMessage(text, "user");
   input.value = "";
 
@@ -63,20 +50,24 @@ async function sendMessage() {
     return;
   }
 
-  // 🔹 Auto-reply pembuat
-  if (text.toLowerCase().includes("pembuat") ||
-      text.toLowerCase().includes("pencipta") ||
+  // 🔹 Auto-reply pencipta
+  if (text.toLowerCase().includes("pencipta") ||
+      text.toLowerCase().includes("pembuat") ||
       text.toLowerCase().includes("siapa yang buat")) {
     const div = addMessage("", "bot");
-    await typeEffect(div, "Saya dibuat dan dikembangkan oleh *Dinns* untuk membantu Anda 🚀", 20);
+    await typeEffect(div, "Saya dibuat dan dikembangkan oleh *Dinns* khusus untuk membantu Anda 🚀", 20);
     return;
   }
 
-  // 🔹 Kalau bukan auto-reply → kirim ke Gemini
+  // 🔹 Kirim ke Gemini dengan instruksi bahasa Indonesia
   const body = {
     contents: [
-      systemInstruction,
-      { role: "user", parts: [{ text }] }
+      {
+        role: "user",
+        parts: [{
+          text: "Instruksi: Jawablah semua pertanyaan dalam bahasa Indonesia. Jika user minta bahasa Inggris, jawab pakai bahasa Inggris.\n\nPertanyaan: " + text
+        }]
+      }
     ]
   };
 
@@ -106,11 +97,8 @@ sendBtn.addEventListener("click", sendMessage);
 input.addEventListener("keypress", (e) => {
   if (e.key === "Enter") sendMessage();
 });
-stopBtn.addEventListener("click", () => {
-  typingAbort = true;
-});
+stopBtn.addEventListener("click", () => { typingAbort = true; });
 
-// clear chat
 function clearChat() {
   chatDiv.innerHTML = "";
   addMessage("🔄 Chat dihapus. Mulai percakapan baru.", "bot");
