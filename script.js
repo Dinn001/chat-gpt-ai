@@ -1,6 +1,9 @@
 // ⚠️ Ganti dengan API key dari Google AI Studio
 const API_KEY = "AIzaSyCdhg5PLaHnoZZjAHl6DRMgY-s_aPvX_Xc";
-const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + API_KEY;
+const API_URL =
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" +
+  API_KEY;
+
 const chatDiv = document.getElementById("chat");
 const input = document.getElementById("input");
 const sendBtn = document.getElementById("sendBtn");
@@ -14,16 +17,18 @@ let uploadedFiles = [];
 // Instruksi sistem
 const systemInstruction = {
   role: "system",
-  parts: [{
-    text: `Instruksi:
+  parts: [
+    {
+      text: `Instruksi:
 - Jawablah semua pertanyaan dalam bahasa Indonesia.
 - Jika user secara eksplisit meminta jawaban dalam bahasa Inggris, maka jawab sesuai permintaan.
-- Istilah teknis, nama orang, atau judul boleh tetap dalam bahasa aslinya.`
-  }]
+- Istilah teknis, nama orang, atau judul boleh tetap dalam bahasa aslinya.`,
+    },
+  ],
 };
 
 // Tambah pesan ke chat
-function addMessage(content, sender, isFile=false, fileName="") {
+function addMessage(content, sender, isFile = false, fileName = "") {
   const div = document.createElement("div");
   div.classList.add("message", sender);
 
@@ -55,7 +60,7 @@ function addMessage(content, sender, isFile=false, fileName="") {
 }
 
 // Efek mengetik
-async function typeEffect(element, text, speed=20) {
+async function typeEffect(element, text, speed = 20) {
   typingAbort = false;
   stopContainer.style.display = "block";
   element.innerText = "";
@@ -63,7 +68,7 @@ async function typeEffect(element, text, speed=20) {
     if (typingAbort) break;
     element.innerText += text[i];
     chatDiv.scrollTop = chatDiv.scrollHeight;
-    await new Promise(r => setTimeout(r, speed));
+    await new Promise((r) => setTimeout(r, speed));
   }
   stopContainer.style.display = "none";
 }
@@ -84,24 +89,36 @@ async function sendMessage() {
   if (!text && uploadedFiles.length === 0) return;
 
   if (text) addMessage(text, "user");
-  uploadedFiles.forEach(f => addMessage(f.preview, "user", true, f.name));
+  uploadedFiles.forEach((f) =>
+    addMessage(f.preview, "user", true, f.name)
+  );
   input.value = "";
 
   // Auto sapaan salam
-  const salam = ["hallo","halo","hai","assalamualaikum","hello"];
+  const salam = ["hallo", "halo", "hai", "assalamualaikum", "hello"];
   if (text && salam.includes(text.toLowerCase())) {
     const div = addMessage("", "bot");
-    await typeEffect(div, "Halo 👋, saya adalah Asisten pribadi *Dinns* yang siap membantu kapan pun Anda butuhkan 🚀", 20);
+    await typeEffect(
+      div,
+      "Halo 👋, saya adalah Asisten pribadi *Dinns* yang siap membantu kapan pun Anda butuhkan 🚀",
+      20
+    );
     uploadedFiles = [];
     return;
   }
 
   // Auto jawaban pencipta
-  if (text.toLowerCase().includes("pencipta") || 
-      text.toLowerCase().includes("pembuat") || 
-      text.toLowerCase().includes("siapa yang buat")) {
+  if (
+    text.toLowerCase().includes("pencipta") ||
+    text.toLowerCase().includes("pembuat") ||
+    text.toLowerCase().includes("siapa yang buat")
+  ) {
     const div = addMessage("", "bot");
-    await typeEffect(div, "Saya dibuat dan dikembangkan oleh *Dinns* khusus untuk membantu Anda 🚀", 20);
+    await typeEffect(
+      div,
+      "Saya dibuat dan dikembangkan oleh *Dinns* khusus untuk membantu Anda 🚀",
+      20
+    );
     uploadedFiles = [];
     return;
   }
@@ -110,7 +127,9 @@ async function sendMessage() {
     let parts = [];
     if (text) parts.push({ text });
     for (let f of uploadedFiles) {
-      parts.push({ inlineData: { data: f.base64, mimeType: f.type } });
+      parts.push({
+        inlineData: { data: f.base64, mimeType: f.type },
+      });
     }
 
     history.push({ role: "user", parts });
@@ -120,13 +139,15 @@ async function sendMessage() {
     const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
 
     const data = await res.json();
     console.log("Response:", data);
 
-    const botText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "⚠️ Tidak ada jawaban.";
+    const botText =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+      "⚠️ Tidak ada jawaban.";
 
     const botDiv = addMessage("", "bot");
     await typeEffect(botDiv, botText, 20);
@@ -141,8 +162,12 @@ async function sendMessage() {
 
 // Event listener
 sendBtn.addEventListener("click", sendMessage);
-input.addEventListener("keypress", e => { if (e.key === "Enter") sendMessage(); });
-stopBtn.addEventListener("click", () => { typingAbort = true; });
+input.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") sendMessage();
+});
+stopBtn.addEventListener("click", () => {
+  typingAbort = true;
+});
 
 // Clear chat
 function clearChat() {
@@ -155,11 +180,18 @@ function clearChat() {
 // Menu upload
 function toggleMenu() {
   const menu = document.getElementById("uploadMenu");
-  menu.style.display = menu.style.display === "block" ? "none" : "block";
+  menu.style.display =
+    menu.style.display === "block" ? "none" : "block";
 }
-function openCamera() { document.getElementById("cameraInput").click(); }
-function openGallery() { document.getElementById("galleryInput").click(); }
-function openFile() { document.getElementById("fileInput").click(); }
+function openCamera() {
+  document.getElementById("cameraInput").click();
+}
+function openGallery() {
+  document.getElementById("galleryInput").click();
+}
+function openFile() {
+  document.getElementById("fileInput").click();
+}
 
 async function handleFiles(files) {
   for (let file of files) {
@@ -167,10 +199,22 @@ async function handleFiles(files) {
       name: file.name,
       type: file.type,
       base64: await fileToBase64(file),
-      preview: URL.createObjectURL(file)
+      preview: URL.createObjectURL(file),
     });
   }
 }
-document.getElementById("cameraInput").addEventListener("change", e => handleFiles(e.target.files));
-document.getElementById("galleryInput").addEventListener("change", e => handleFiles(e.target.files));
-document.getElementById("fileInput").addEventListener("change", e => handleFiles(e.target.files));
+document
+  .getElementById("cameraInput")
+  .addEventListener("change", (e) =>
+    handleFiles(e.target.files)
+  );
+document
+  .getElementById("galleryInput")
+  .addEventListener("change", (e) =>
+    handleFiles(e.target.files)
+  );
+document
+  .getElementById("fileInput")
+  .addEventListener("change", (e) =>
+    handleFiles(e.target.files)
+  );
