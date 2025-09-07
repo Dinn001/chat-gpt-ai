@@ -1,7 +1,7 @@
 // ⚠️ Ganti dengan API key dari Google AI Studio
 const API_KEY = "AIzaSyB9_pVjMK0Rt_BX7ILCqyRSEZd0qaExrTs";
 const API_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" +
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=" +
   API_KEY;
 
 const chatDiv = document.getElementById("chat");
