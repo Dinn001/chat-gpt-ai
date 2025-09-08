@@ -46,7 +46,7 @@ async function sendMessage() {
   const salam = ["halo", "hallo", "hai", "hello", "assalamualaikum"];
   if (salam.includes(text.toLowerCase())) {
     const div = addMessage("", "bot");
-    await typeEffect(div, "Halo 👋, saya adalah Asisten pribadi *Dinns* yang siap membantu kapan pun Anda butuhkan 🚀", 20);
+    await typeEffect(div, "Halo 👋, saya adalah Asisten pribadi Dinns yang siap membantu kapan pun Anda butuhkan 🚀", 20);
     return;
   }
 
@@ -55,7 +55,7 @@ async function sendMessage() {
       text.toLowerCase().includes("pembuat") ||
       text.toLowerCase().includes("siapa yang buat")) {
     const div = addMessage("", "bot");
-    await typeEffect(div, "Saya dibuat dan dikembangkan oleh *Dinns* khusus untuk membantu Anda 🚀", 20);
+    await typeEffect(div, "Saya dibuat dan dikembangkan oleh Dinns khusus untuk membantu Anda 🚀", 20);
     return;
   }
 
