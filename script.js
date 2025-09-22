@@ -108,6 +108,9 @@ function openGallery() {
 function openFile() {
   document.getElementById("fileInput").click();
 }
+function closeMenu() {
+  document.getElementById("uploadMenu").style.display = "none";
+}
 
 // Handle file setelah dipilih
 async function handleFiles(files) {
