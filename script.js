@@ -91,6 +91,39 @@ async function sendMessage() {
     addMessage("⚠️ Error: " + err.message, "bot");
   }
 }
+// Toggle menu upload
+function toggleMenu() {
+  const menu = document.getElementById("uploadMenu");
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+function openCamera() {
+  document.getElementById("cameraInput").click();
+}
+
+function openGallery() {
+  document.getElementById("galleryInput").click();
+}
+
+function openFile() {
+  document.getElementById("fileInput").click();
+}
+
+// Handle file setelah dipilih
+async function handleFiles(files) {
+  for (let file of files) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      // tampilkan preview di chat
+      addMessage("📎 File terpilih: " + file.name, "user");
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+document.getElementById("cameraInput").addEventListener("change", e => handleFiles(e.target.files));
+document.getElementById("galleryInput").addEventListener("change", e => handleFiles(e.target.files));
+document.getElementById("fileInput").addEventListener("change", e => handleFiles(e.target.files));
 
 // event listener
 sendBtn.addEventListener("click", sendMessage);
